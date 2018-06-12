@@ -20,7 +20,7 @@ import com.yisingle.amapview.lib.viewholder.MapInfoWindowViewHolder;
  * @author jikun
  * Created by jikun on 2018/5/16.
  */
-public class PointMarkActivity extends BaseMapActivity {
+public class PointMarkerActivity extends BaseMapActivity {
     private TextureMapView textureMapView;
     private PointMarkerView<String> startPointMarkerView;
 

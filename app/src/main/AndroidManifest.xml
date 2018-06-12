@@ -25,22 +25,20 @@
             android:name=".demo.LocationMarkerActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".demo.PointMarkUseMoveActivty"
+            android:name=".demo.PointMarkerUseMoveActivty"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".demo.TextMarkeActivity"
+            android:name=".demo.TextMarkerActivity"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".demo.PointMarkActivity"
+            android:name=".demo.PointMarkerActivity"
             android:screenOrientation="portrait" />
 
         <activity
             android:name=".demo.PathPlaningActivity"
             android:screenOrientation="portrait" />
-        <activity
-            android:name=".demo.ThreadActivity"
-            android:screenOrientation="portrait" />
+
     </application>
 
 </manifest>

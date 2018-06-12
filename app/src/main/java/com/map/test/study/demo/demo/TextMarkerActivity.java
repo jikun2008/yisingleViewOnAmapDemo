@@ -18,7 +18,7 @@ import com.yisingle.amapview.lib.view.TextMarkerView;
  * @author jikun
  * Created by jikun on 2018/5/7.
  */
-public class TextMarkeActivity extends BaseMapActivity {
+public class TextMarkerActivity extends BaseMapActivity {
     private TextureMapView textureMapView;
 
     private TextMarkerView textMarkerView;

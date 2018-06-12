@@ -26,7 +26,7 @@ import java.util.List;
  * Created by jikun on 2018/4/27.
  * 平滑移动效果
  */
-public class PointMarkUseMoveActivty extends BaseMapActivity {
+public class PointMarkerUseMoveActivty extends BaseMapActivity {
 
     private TextureMapView textureMapView;
 

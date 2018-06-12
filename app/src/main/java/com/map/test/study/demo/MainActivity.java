@@ -14,9 +14,9 @@ import com.amap.api.services.route.RouteSearch;
 import com.amap.api.services.route.WalkRouteResult;
 import com.map.test.study.demo.demo.LocationMarkerActivity;
 import com.map.test.study.demo.demo.PathPlaningActivity;
-import com.map.test.study.demo.demo.PointMarkActivity;
-import com.map.test.study.demo.demo.PointMarkUseMoveActivty;
-import com.map.test.study.demo.demo.TextMarkeActivity;
+import com.map.test.study.demo.demo.PointMarkerActivity;
+import com.map.test.study.demo.demo.PointMarkerUseMoveActivty;
+import com.map.test.study.demo.demo.TextMarkerActivity;
 import com.map.test.study.demo.demo.ThreadActivity;
 import com.yisingle.amapview.lib.utils.GaoDeErrorUtils;
 
@@ -93,20 +93,20 @@ public class MainActivity extends AppCompatActivity {
 
     public void toMoveMarkerMapActivty(View view) {
         Intent intent = new Intent();
-        intent.setClass(this, PointMarkUseMoveActivty.class);
+        intent.setClass(this, PointMarkerUseMoveActivty.class);
         startActivity(intent);
     }
 
 
     public void toNearByMarkeActivity(View view) {
         Intent intent = new Intent();
-        intent.setClass(this, TextMarkeActivity.class);
+        intent.setClass(this, TextMarkerActivity.class);
         startActivity(intent);
     }
 
     public void toStartEndActivity(View view) {
         Intent intent = new Intent();
-        intent.setClass(this, PointMarkActivity.class);
+        intent.setClass(this, PointMarkerActivity.class);
         startActivity(intent);
     }
 
