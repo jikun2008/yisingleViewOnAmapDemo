@@ -8,34 +8,41 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <Button
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:onClick="stopMove"
-        android:text="停止移动" />
+        android:orientation="vertical">
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:onClick="startMove"
-        android:text="立即在绿线移动" />
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_centerVertical="true"
-        android:onClick="resumeMove"
-        android:text="添加黄线移动\n(不会打断正在移动marker)" />
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:onClick="startOtherMove"
-        android:text="立即在黄线移动" />
+            android:onClick="stopMove"
+            android:text="停止移动" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:onClick="startMove"
+            android:text="立即在绿线移动" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:onClick="resumeMove"
+            android:text="添加黄线移动\n(不会打断正在移动marker)" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:onClick="startOtherMove"
+            android:text="立即在黄线移动" />
+
+    </LinearLayout>
 
 
 </RelativeLayout>

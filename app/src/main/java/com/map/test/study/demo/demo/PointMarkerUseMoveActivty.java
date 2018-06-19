@@ -61,7 +61,7 @@ public class PointMarkerUseMoveActivty extends BaseMapActivity {
                 .setAnchor(0.5f, 0.5f)
                 .setIcon(BitmapDescriptorFactory.fromResource(R.mipmap.car)).create();
 
-        pointMarkerView.setInfoWindowView(new BaseMarkerView.InfoWindowView<String>(R.layout.info_window, "") {
+        pointMarkerView.setInfoWindowView(new BaseMarkerView.InfoWindowView<String>(R.layout.start_info_window, "") {
             @Override
             public void bindData(MapInfoWindowViewHolder viewHolder, String data) {
 
@@ -90,7 +90,7 @@ public class PointMarkerUseMoveActivty extends BaseMapActivity {
 
 
         moveCamre(nowListPoints);
-        pointMarkerView.startMove(nowListPoints);
+        pointMarkerView.startMove(nowListPoints, false);
     }
 
     public void stopMove(View view) {
@@ -111,7 +111,7 @@ public class PointMarkerUseMoveActivty extends BaseMapActivity {
 
 
         moveCamre(resumeListPoints);
-        pointMarkerView.startMove(resumeListPoints);
+        pointMarkerView.startMove(resumeListPoints, false);
 
 
     }

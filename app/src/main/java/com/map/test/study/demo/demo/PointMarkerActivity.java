@@ -45,7 +45,7 @@ public class PointMarkerActivity extends BaseMapActivity {
                 .setIcon(BitmapDescriptorFactory.fromResource(R.mipmap.amap_start))
                 .create();
 
-        startPointMarkerView.setInfoWindowView(new BaseMarkerView.InfoWindowView<String>(R.layout.info_window, "start") {
+        startPointMarkerView.setInfoWindowView(new BaseMarkerView.InfoWindowView<String>(R.layout.start_info_window, "start") {
             @Override
             public void bindData(MapInfoWindowViewHolder viewHolder, String data) {
                 viewHolder.setText(R.id.tvInfoWindow, data);
@@ -61,7 +61,7 @@ public class PointMarkerActivity extends BaseMapActivity {
                 .create();
 
 
-        endPointMarkerView.setInfoWindowView(new BaseMarkerView.InfoWindowView<String>(R.layout.info_window1, "结束") {
+        endPointMarkerView.setInfoWindowView(new BaseMarkerView.InfoWindowView<String>(R.layout.end_info_window, "结束") {
             @Override
             public void bindData(MapInfoWindowViewHolder viewHolder, String data) {
                 viewHolder.setText(R.id.tvInfoWindow1, data);
@@ -88,10 +88,6 @@ public class PointMarkerActivity extends BaseMapActivity {
 
     }
 
-    public void testAddMarker(View view) {
-        startPointMarkerView.addToMap();
-        endPointMarkerView.addToMap();
-    }
 
     public void testSetPoint(View view) {
         if (null != startPointMarkerView.getPosition() && startPointMarkerView.getPosition().equals(startlatLng)) {
@@ -105,10 +101,6 @@ public class PointMarkerActivity extends BaseMapActivity {
 
     }
 
-    public void testRemoveMarker(View view) {
-        startPointMarkerView.removeFromMap();
-        endPointMarkerView.removeFromMap();
-    }
 
     public void testChangeUI(View view) {
         if (null != startPointMarkerView.getPosition() && startPointMarkerView.getPosition().equals(startlatLng)) {

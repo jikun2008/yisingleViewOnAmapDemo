@@ -4,7 +4,9 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.amap.api.location.AMapLocation;
 import com.amap.api.maps.CameraUpdateFactory;
 import com.amap.api.maps.TextureMapView;
 import com.amap.api.maps.model.LatLng;
@@ -47,26 +49,33 @@ public class LocationMarkerActivity extends BaseMapActivity {
 
         locationMarkerView =
                 new LocationMarkerView.Builder(getApplicationContext(), getAmap())
-                        //设置没有方向传感器的图片资源ID
                         .create();
 
         locationMarkerView.startLocation();
 
+        locationMarkerView.setListener(new LocationMarkerView.onLocationMarkerViewListener() {
+            @Override
+            public void onLocationSuccess(AMapLocation loc) {
+                moveToCamera(new LatLng(loc.getLatitude(), loc.getLongitude()));
+            }
 
-        moveToCamera(new LatLng(30.551662, 104.068551));
+            @Override
+            public void onLocationFailed(AMapLocation loc) {
+                Toast.makeText(getApplicationContext(), "定位失败", Toast.LENGTH_LONG).show();
 
+            }
 
-    }
+            @Override
+            public void onRotationSuccess(float angle) {
 
+            }
 
-    public void testAddMarker(View view) {
-        locationMarkerView.addToMap();
-        locationMarkerView.startLocation();
-    }
+            @Override
+            public void onRotationFailed(String erroInfo) {
 
+            }
+        });
 
-    public void testRemoveMarker(View view) {
-        locationMarkerView.removeFromMap();
 
     }
 

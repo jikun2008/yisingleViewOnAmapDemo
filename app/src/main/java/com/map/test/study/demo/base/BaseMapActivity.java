@@ -2,6 +2,8 @@ package com.map.test.study.demo.base;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 
 import com.amap.api.maps.AMap;
 import com.amap.api.maps.AMapOptions;
@@ -16,13 +18,19 @@ import com.amap.api.navi.model.NaviLatLng;
  * @author jikun
  * Created by jikun on 2018/4/11.
  */
-public abstract class BaseMapActivity extends Activity {
+public abstract class BaseMapActivity extends BaseActivity {
 
     private TextureMapView textureMapView;
 
 
     protected TextureMapView getMapView() {
         return textureMapView;
+    }
+
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
     }
 
     protected void initMapView(Bundle savedInstanceState, TextureMapView textureMapView) {
@@ -35,8 +43,9 @@ public abstract class BaseMapActivity extends Activity {
                 @Override
                 public void onMapLoaded() {
                     //地图MapView加载完成后回调 用来UiSetting设置参数
-                    afterMapViewLoad();
                     initMapUiSetting();
+                    afterMapViewLoad();
+
 
                 }
             });
@@ -143,5 +152,6 @@ public abstract class BaseMapActivity extends Activity {
     public AMap getAmap() {
         return textureMapView.getMap();
     }
+
 
 }

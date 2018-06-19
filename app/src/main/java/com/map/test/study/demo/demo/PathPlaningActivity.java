@@ -82,6 +82,7 @@ public class PathPlaningActivity extends BaseMapActivity {
                     @Override
                     public void onStart() {
                         infoTextView.setText("开始路径规划");
+                        showLoadingDialog();
 
                     }
 
@@ -89,12 +90,14 @@ public class PathPlaningActivity extends BaseMapActivity {
                     public void onSucccess(DriveRouteResult routeResult) {
                         infoTextView.setText("路径规划成功");
                         moveCamera(routeResult.getStartPos(), routeResult.getTargetPos());
+                        dissmissLoadingDialog();
 
                     }
 
                     @Override
                     public void onFailed(String errorInfo) {
                         infoTextView.setText("路径规划失败");
+                        dissmissLoadingDialog();
 
                     }
                 });
