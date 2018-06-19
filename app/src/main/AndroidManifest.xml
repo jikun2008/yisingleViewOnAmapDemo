@@ -13,7 +13,8 @@
         <meta-data
             android:name="com.amap.api.v2.apikey"
             android:value="8d2bcfb44216b10ecbd69d01016f4568" />
-
+        <!--定位服务类一定要加-->
+        <service android:name="com.amap.api.location.APSService"></service>
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
