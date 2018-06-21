@@ -45,7 +45,7 @@ public class PointMarkerActivity extends BaseMapActivity {
                 .setIcon(BitmapDescriptorFactory.fromResource(R.mipmap.amap_start))
                 .create();
 
-        startPointMarkerView.setInfoWindowView(new BaseMarkerView.InfoWindowView<String>(R.layout.start_info_window, "start") {
+        startPointMarkerView.bindInfoWindowView(new BaseMarkerView.InfoWindowView<String>(R.layout.start_info_window, "start") {
             @Override
             public void bindData(MapInfoWindowViewHolder viewHolder, String data) {
                 viewHolder.setText(R.id.tvInfoWindow, data);
@@ -61,7 +61,7 @@ public class PointMarkerActivity extends BaseMapActivity {
                 .create();
 
 
-        endPointMarkerView.setInfoWindowView(new BaseMarkerView.InfoWindowView<String>(R.layout.end_info_window, "结束") {
+        endPointMarkerView.bindInfoWindowView(new BaseMarkerView.InfoWindowView<String>(R.layout.end_info_window, "结束") {
             @Override
             public void bindData(MapInfoWindowViewHolder viewHolder, String data) {
                 viewHolder.setText(R.id.tvInfoWindow1, data);
@@ -104,11 +104,15 @@ public class PointMarkerActivity extends BaseMapActivity {
 
     public void testChangeUI(View view) {
         if (null != startPointMarkerView.getPosition() && startPointMarkerView.getPosition().equals(startlatLng)) {
-            startPointMarkerView.changeUI(endlatLng, "修改文字起点");
-            endPointMarkerView.changeUI(startlatLng, "修改文字终点");
+            startPointMarkerView.setText("修改文字起点");
+            startPointMarkerView.setPosition(endlatLng);
+            endPointMarkerView.setText("修改文字终点");
+            endPointMarkerView.setPosition(startlatLng);
         } else {
-            startPointMarkerView.changeUI(startlatLng, "修改文字起点1111");
-            endPointMarkerView.changeUI(endlatLng, "修改文字终点1111");
+            startPointMarkerView.setText("修改文字起点1111");
+            startPointMarkerView.setPosition(startlatLng);
+            endPointMarkerView.setText("修改文字终点1111");
+            endPointMarkerView.setPosition(endlatLng);
         }
 
 

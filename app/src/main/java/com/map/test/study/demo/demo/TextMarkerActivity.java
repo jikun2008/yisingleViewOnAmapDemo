@@ -41,8 +41,8 @@ public class TextMarkerActivity extends BaseMapActivity {
 
         textMarkerView = new TextMarkerView.Builder(getApplicationContext(), getAmap())
 
-                .setTextPaddingLeftOrRight(90)
-                .setText("天府广场设计费速度快放假时代峻峰")
+//                .setTextPaddingLeftOrRight(90)
+                .setText("附近的点1")
                 .setIcon(BitmapDescriptorFactory.fromResource(R.mipmap.hot_point)).create();
         moveToCamera(latLng);
 
@@ -53,10 +53,10 @@ public class TextMarkerActivity extends BaseMapActivity {
 
 
     public void testChangeText(View view) {
-        if (textMarkerView.getText().equals("春熙路春熙路")) {
-            textMarkerView.setText("天府广场设计费速度快放假时代峻峰");
+        if (textMarkerView.getText().equals("附近的点1")) {
+            textMarkerView.setText("附近的点0");
         } else {
-            textMarkerView.setText("春熙路春熙路");
+            textMarkerView.setText("附近的点1");
         }
 
     }

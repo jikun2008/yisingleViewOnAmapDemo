@@ -15,6 +15,7 @@
             android:value="8d2bcfb44216b10ecbd69d01016f4568" />
         <!--定位服务类一定要加-->
         <service android:name="com.amap.api.location.APSService"></service>
+
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -38,6 +39,10 @@
 
         <activity
             android:name=".demo.PathPlaningActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".didi.DidiAllActivity"
             android:screenOrientation="portrait" />
 
     </application>

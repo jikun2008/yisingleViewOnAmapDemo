@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
 
 import com.amap.api.services.core.LatLonPoint;
 import com.amap.api.services.route.BusRouteResult;
@@ -18,6 +17,7 @@ import com.map.test.study.demo.demo.PathPlaningActivity;
 import com.map.test.study.demo.demo.PointMarkerActivity;
 import com.map.test.study.demo.demo.PointMarkerUseMoveActivty;
 import com.map.test.study.demo.demo.TextMarkerActivity;
+import com.map.test.study.demo.didi.DidiAllActivity;
 import com.yisingle.amapview.lib.utils.GaoDeErrorUtils;
 
 
@@ -116,6 +116,12 @@ public class MainActivity extends BaseActivity {
     public void toPathPlaningActivity(View view) {
         Intent intent = new Intent();
         intent.setClass(this, PathPlaningActivity.class);
+        startActivity(intent);
+    }
+
+    public void toDiDiActivity(View view) {
+        Intent intent = new Intent();
+        intent.setClass(this, DidiAllActivity.class);
         startActivity(intent);
     }
 
