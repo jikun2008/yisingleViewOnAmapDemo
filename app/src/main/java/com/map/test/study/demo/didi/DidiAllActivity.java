@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 
 import com.amap.api.location.AMapLocation;
 import com.amap.api.maps.AMap;
+import com.amap.api.maps.CameraUpdateFactory;
 import com.amap.api.maps.TextureMapView;
 import com.amap.api.maps.model.BitmapDescriptorFactory;
 import com.amap.api.maps.model.CameraPosition;
@@ -12,9 +13,8 @@ import com.amap.api.maps.model.LatLng;
 import com.map.test.study.demo.R;
 import com.map.test.study.demo.base.BaseMapActivity;
 import com.map.test.study.demo.didi.test.TestNearByDataUtils;
-import com.map.test.study.demo.utils.TwoArrayUtils;
+import com.map.test.study.demo.view.NearByPointViewGroup;
 import com.yisingle.amapview.lib.view.LocationMarkerView;
-import com.yisingle.amapview.lib.view.TextMarkerView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,11 +26,10 @@ import java.util.List;
 public class DidiAllActivity extends BaseMapActivity {
     private TextureMapView textureMapView;
 
-    private List<TextMarkerView> textMarkerViewList = new ArrayList<>();
-
-    private List<LatLng> latLngList = new ArrayList<>();
-
     private LocationMarkerView locationMarkerView;
+
+
+    private NearByPointViewGroup nearByPointViewGroup;
 
 
     @Override
@@ -46,6 +45,7 @@ public class DidiAllActivity extends BaseMapActivity {
     @Override
     protected void afterMapViewLoad() {
         initLocationView();
+        initNearByPointViewGroup();
         getAmap().setOnCameraChangeListener(new AMap.OnCameraChangeListener() {
             @Override
             public void onCameraChange(CameraPosition cameraPosition) {
@@ -55,10 +55,24 @@ public class DidiAllActivity extends BaseMapActivity {
             @Override
             public void onCameraChangeFinish(CameraPosition cameraPosition) {
 
-                initNearByPointText(new LatLng(cameraPosition.target.latitude, cameraPosition.target.longitude));
+                List<NearByPointViewGroup.NearByData> list = new ArrayList<>();
+                //产生坐标附近随机的点
+                List<LatLng> latLngList = TestNearByDataUtils.produceLatLngList(10, new LatLng(cameraPosition.target.latitude, cameraPosition.target.longitude));
+                for (int i = 0; i < latLngList.size(); i++) {
+                    list.add(new NearByPointViewGroup.NearByData("附近的点" + i, latLngList.get(i)));
+                }
+                nearByPointViewGroup.setTextAndPoint(list);
 
             }
         });
+
+        getAmap().moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(30.546173, 104.06934), 14));
+
+    }
+
+
+    private void initNearByPointViewGroup() {
+        nearByPointViewGroup = new NearByPointViewGroup(getApplicationContext(), getAmap());
 
     }
 
@@ -84,75 +98,16 @@ public class DidiAllActivity extends BaseMapActivity {
 
     }
 
-    /**
-     * 附近的点
-     */
-    private void initNearByPointText(LatLng latLng) {
-        latLngList = TestNearByDataUtils.produceLatLngList(10, latLng);
-
-        TwoArrayUtils.looperCompare(textMarkerViewList, latLngList, new TwoArrayUtils.Listener<List<TextMarkerView>, List<LatLng>>() {
-
-
-            @Override
-            public void onOneMore(List<TextMarkerView> more, List<TextMarkerView> remain) {
-
-                if (null != textMarkerViewList && null != latLngList) {
-                    for (TextMarkerView view : more) {
-                        view.destory();
-                    }
-
-                    textMarkerViewList = remain;
-
-                    setNearByText();
-                }
-
-
-            }
-
-            @Override
-            public void onTwoMore(List<LatLng> more, List<LatLng> remain) {
-                for (LatLng latLng : more) {
-                    textMarkerViewList.add(produce());
-                }
-
-
-                setNearByText();
-
-
-            }
-
-            @Override
-            public void onSizeEqual() {
-
-
-            }
-        });
-
-    }
-
-    private void setNearByText() {
-        for (int i = 0; i < textMarkerViewList.size(); i++) {
-
-            if (i < latLngList.size()) {
-                textMarkerViewList.get(i).setPosition(latLngList.get(i));
-                textMarkerViewList.get(i).setText("附近的点" + i);
-            }
-
-
-        }
-    }
-
-
-    private TextMarkerView produce() {
-        TextMarkerView textMarkerView = new TextMarkerView.Builder(getApplicationContext(), getAmap())
-                .create();
-        return textMarkerView;
-
-    }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        locationMarkerView.destory();
+        if (null != locationMarkerView) {
+            locationMarkerView.destory();
+        }
+
+        if (null != nearByPointViewGroup) {
+            nearByPointViewGroup.destory();
+        }
     }
 }
