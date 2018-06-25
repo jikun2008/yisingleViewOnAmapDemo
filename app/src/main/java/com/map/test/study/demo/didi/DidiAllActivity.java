@@ -88,7 +88,7 @@ public class DidiAllActivity extends BaseMapActivity {
         locationMarkerView.startLocation();
 
 
-        locationMarkerView.setListener(new LocationMarkerView.onLocationMarkerViewListenerAdapter() {
+        locationMarkerView.setListener(new LocationMarkerView.OnLocationMarkerViewListenerAdapter() {
             @Override
             public void onLocationSuccess(AMapLocation loc) {
                 super.onLocationSuccess(loc);

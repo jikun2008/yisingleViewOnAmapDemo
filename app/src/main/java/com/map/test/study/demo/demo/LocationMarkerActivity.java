@@ -53,7 +53,7 @@ public class LocationMarkerActivity extends BaseMapActivity {
 
         locationMarkerView.startLocation();
 
-        locationMarkerView.setListener(new LocationMarkerView.onLocationMarkerViewListener() {
+        locationMarkerView.setListener(new LocationMarkerView.OnLocationMarkerViewListener() {
             @Override
             public void onLocationSuccess(AMapLocation loc) {
                 moveToCamera(new LatLng(loc.getLatitude(), loc.getLongitude()));
