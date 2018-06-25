@@ -17,6 +17,20 @@ import java.util.List;
 public class TestNearByDataUtils {
 
 
+    public static List<List<LatLng>> produceList(int random, LatLng center) {
+
+        List<List<LatLng>> list = new ArrayList<>();
+        int size = 1 + (int) (Math.random() * random);
+
+        for (int i = 0; i < size; i++) {
+            list.add(produceLatLngList(random, center));
+        }
+        return list;
+
+
+    }
+
+
     public static List<LatLng> produceLatLngList(int random, @NonNull LatLng center) {
         List<LatLng> list = new ArrayList<>();
         int size = 1 + (int) (Math.random() * random);

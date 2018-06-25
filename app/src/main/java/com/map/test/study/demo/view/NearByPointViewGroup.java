@@ -14,6 +14,7 @@ import java.util.List;
 /**
  * @author jikun
  * Created by jikun on 2018/6/22.
+ * 附近的点坐标方法
  */
 public class NearByPointViewGroup {
 
@@ -81,6 +82,7 @@ public class NearByPointViewGroup {
 
     private TextMarkerView produce() {
         TextMarkerView textMarkerView = new TextMarkerView.Builder(getContext(), getAmap())
+                .setZindex(2)
                 .create();
         return textMarkerView;
 

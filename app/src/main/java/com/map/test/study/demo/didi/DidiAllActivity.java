@@ -13,6 +13,7 @@ import com.amap.api.maps.model.LatLng;
 import com.map.test.study.demo.R;
 import com.map.test.study.demo.base.BaseMapActivity;
 import com.map.test.study.demo.didi.test.TestNearByDataUtils;
+import com.map.test.study.demo.view.NearByCarViewGroup;
 import com.map.test.study.demo.view.NearByPointViewGroup;
 import com.yisingle.amapview.lib.view.LocationMarkerView;
 
@@ -32,6 +33,9 @@ public class DidiAllActivity extends BaseMapActivity {
     private NearByPointViewGroup nearByPointViewGroup;
 
 
+    private NearByCarViewGroup nearByCarViewGroup;
+
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,7 +49,7 @@ public class DidiAllActivity extends BaseMapActivity {
     @Override
     protected void afterMapViewLoad() {
         initLocationView();
-        initNearByPointViewGroup();
+        initNearByView();
         getAmap().setOnCameraChangeListener(new AMap.OnCameraChangeListener() {
             @Override
             public void onCameraChange(CameraPosition cameraPosition) {
@@ -55,13 +59,8 @@ public class DidiAllActivity extends BaseMapActivity {
             @Override
             public void onCameraChangeFinish(CameraPosition cameraPosition) {
 
-                List<NearByPointViewGroup.NearByData> list = new ArrayList<>();
-                //产生坐标附近随机的点
-                List<LatLng> latLngList = TestNearByDataUtils.produceLatLngList(10, new LatLng(cameraPosition.target.latitude, cameraPosition.target.longitude));
-                for (int i = 0; i < latLngList.size(); i++) {
-                    list.add(new NearByPointViewGroup.NearByData("附近的点" + i, latLngList.get(i)));
-                }
-                nearByPointViewGroup.setTextAndPoint(list);
+                produceSetDataNearByPointView(cameraPosition);
+                produceSetDataNearByCarView(cameraPosition);
 
             }
         });
@@ -71,9 +70,27 @@ public class DidiAllActivity extends BaseMapActivity {
     }
 
 
-    private void initNearByPointViewGroup() {
+    private void initNearByView() {
         nearByPointViewGroup = new NearByPointViewGroup(getApplicationContext(), getAmap());
+        nearByCarViewGroup = new NearByCarViewGroup(getApplicationContext(), getAmap());
 
+    }
+
+    private void produceSetDataNearByPointView(CameraPosition cameraPosition) {
+        List<NearByPointViewGroup.NearByData> list = new ArrayList<>();
+        //产生坐标附近随机的点
+        List<LatLng> latLngList = TestNearByDataUtils.produceLatLngList(10, new LatLng(cameraPosition.target.latitude, cameraPosition.target.longitude));
+        for (int i = 0; i < latLngList.size(); i++) {
+            list.add(new NearByPointViewGroup.NearByData("附近的点" + i, latLngList.get(i)));
+        }
+        nearByPointViewGroup.setTextAndPoint(list);
+
+    }
+
+    private void produceSetDataNearByCarView(CameraPosition cameraPosition) {
+
+
+        nearByCarViewGroup.setLatLngList(TestNearByDataUtils.produceList(10, new LatLng(cameraPosition.target.latitude, cameraPosition.target.longitude)));
     }
 
 
@@ -108,6 +125,10 @@ public class DidiAllActivity extends BaseMapActivity {
 
         if (null != nearByPointViewGroup) {
             nearByPointViewGroup.destory();
+        }
+
+        if (null != nearByCarViewGroup) {
+            nearByCarViewGroup.destory();
         }
     }
 }
