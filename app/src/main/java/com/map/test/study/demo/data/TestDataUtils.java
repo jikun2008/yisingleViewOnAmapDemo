@@ -188,4 +188,13 @@ public class TestDataUtils {
     }
 
 
+    public static List<LatLng> readLatLngs() {
+        List<LatLng> points = new ArrayList<>();
+        for (int i = 0; i < coords.length; i += 2) {
+            points.add(new LatLng(coords[i], coords[i + 1]));
+        }
+        return points;
+    }
+
+
 }

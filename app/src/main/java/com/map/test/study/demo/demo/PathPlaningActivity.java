@@ -33,7 +33,6 @@ public class PathPlaningActivity extends BaseMapActivity {
     @Override
     protected void afterMapViewLoad() {
         pathPlaningView = new PathPlaningView.Builder(getApplicationContext(), getAmap())
-                .setAuotDrawPath(true)
                 .setEndMarkBuilder(new PointMarkerView.Builder(getApplicationContext(), getAmap())
                         .setText("终点").
                                 setIcon(BitmapDescriptorFactory.fromResource(R.mipmap.amap_end)))
@@ -77,7 +76,7 @@ public class PathPlaningActivity extends BaseMapActivity {
 
     private void planing(LatLonPoint start, LatLonPoint end) {
 
-        pathPlaningView.beginDriveRouteSearched(start, end,
+        pathPlaningView.beginDriveRouteSearched(start, end,true,
                 new PathPlaningView.OnPathPlaningCallBack() {
                     @Override
                     public void onStart() {

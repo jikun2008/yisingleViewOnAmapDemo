@@ -38,22 +38,15 @@ public class NearByPointViewGroup {
         nearByDataList = nearByData;
 
         TwoArrayUtils.looperCompare(textMarkerViewList, nearByData, new TwoArrayUtils.Listener<List<TextMarkerView>, List<NearByData>>() {
-
-
             @Override
             public void onOneMore(List<TextMarkerView> more, List<TextMarkerView> remain) {
-
                 if (null != textMarkerViewList && null != nearByDataList) {
                     for (TextMarkerView view : more) {
                         view.destory();
                     }
-
                     textMarkerViewList = remain;
-
                     setNearByText();
                 }
-
-
             }
 
             @Override
@@ -61,19 +54,11 @@ public class NearByPointViewGroup {
                 for (NearByData data : more) {
                     textMarkerViewList.add(produce());
                 }
-
-
                 setNearByText();
-
-
             }
-
             @Override
             public void onSizeEqual() {
-
                 setNearByText();
-
-
             }
         });
 
@@ -81,10 +66,9 @@ public class NearByPointViewGroup {
 
 
     private TextMarkerView produce() {
-        TextMarkerView textMarkerView = new TextMarkerView.Builder(getContext(), getAmap())
+        return new TextMarkerView.Builder(getContext(), getAmap())
                 .setZindex(2)
                 .create();
-        return textMarkerView;
 
     }
 

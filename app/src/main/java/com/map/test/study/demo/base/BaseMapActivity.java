@@ -124,30 +124,6 @@ public abstract class BaseMapActivity extends BaseActivity {
 
     }
 
-    /**
-     * 在导航的地图MapView上移动视角
-     */
-    public void moveCameraMapView(NaviLatLng start, NaviLatLng end) {
-
-        LatLngBounds.Builder builder = new LatLngBounds.Builder();
-
-
-        builder.include(new LatLng(start.getLatitude(), start.getLongitude()));
-        builder.include(new LatLng(end.getLatitude(), end.getLongitude()));
-        LatLngBounds latLngBounds = builder.build();
-        //newLatLngBoundsRect(LatLngBounds latlngbounds,
-        //int paddingLeft,设置经纬度范围和mapView左边缘的空隙。
-        //int paddingRight,设置经纬度范围和mapView右边缘的空隙
-        //int paddingTop,设置经纬度范围和mapView上边缘的空隙。
-        //int paddingBottom)设置经纬度范围和mapView下边缘的空隙。
-        if (null != getMapView() && null != getMapView().getMap()) {
-            getMapView().getMap()
-                    .animateCamera(CameraUpdateFactory.newLatLngBoundsRect(latLngBounds, 80, 80, 80, 80));
-        }
-
-
-    }
-
 
     public AMap getAmap() {
         return textureMapView.getMap();

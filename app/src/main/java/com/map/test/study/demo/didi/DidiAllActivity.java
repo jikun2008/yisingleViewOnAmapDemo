@@ -1,7 +1,9 @@
 package com.map.test.study.demo.didi;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.view.View;
 
 import com.amap.api.location.AMapLocation;
 import com.amap.api.maps.AMap;
@@ -30,9 +32,15 @@ public class DidiAllActivity extends BaseMapActivity {
     private LocationMarkerView locationMarkerView;
 
 
+    /**
+     * 附近的点
+     */
     private NearByPointViewGroup nearByPointViewGroup;
 
 
+    /**
+     * 附近的车辆
+     */
     private NearByCarViewGroup nearByCarViewGroup;
 
 
@@ -130,5 +138,13 @@ public class DidiAllActivity extends BaseMapActivity {
         if (null != nearByCarViewGroup) {
             nearByCarViewGroup.destory();
         }
+    }
+
+
+    public void testToDidiDetailActivity(View view) {
+        Intent intent = new Intent(this, DidiDetailActivity.class);
+        startActivity(intent);
+
+
     }
 }

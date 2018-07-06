@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">DEMO</string>
+
+
+    <string name="loading_info_window_time_des">分钟</string>
+    <string name="loading_info_window_time">3</string>
+    <string name="leave_from_here">从这里出发</string>
+    <string name="my_location">我的位置</string>
+    <string name="where_are_go">你要去哪里</string>
 </resources>
