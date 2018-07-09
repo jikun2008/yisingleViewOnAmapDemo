@@ -6,7 +6,8 @@ import com.amap.api.maps.AMap;
 import com.amap.api.maps.model.BitmapDescriptorFactory;
 import com.amap.api.maps.model.LatLng;
 import com.map.test.study.demo.R;
-import com.map.test.study.demo.utils.TwoArrayUtils;
+
+import com.yisingle.amapview.lib.utils.TwoArrayUtils;
 import com.yisingle.amapview.lib.view.PointMarkerView;
 
 import java.util.ArrayList;

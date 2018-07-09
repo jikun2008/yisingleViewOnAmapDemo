@@ -5,7 +5,8 @@ import android.support.annotation.NonNull;
 
 import com.amap.api.maps.AMap;
 import com.amap.api.maps.model.LatLng;
-import com.map.test.study.demo.utils.TwoArrayUtils;
+
+import com.yisingle.amapview.lib.utils.TwoArrayUtils;
 import com.yisingle.amapview.lib.view.TextMarkerView;
 
 import java.util.ArrayList;
