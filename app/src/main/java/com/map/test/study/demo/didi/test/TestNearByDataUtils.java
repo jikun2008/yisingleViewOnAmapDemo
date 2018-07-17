@@ -35,7 +35,7 @@ public class TestNearByDataUtils {
         List<LatLng> list = new ArrayList<>();
         int size = 1 + (int) (Math.random() * random);
 
-        Log.e("测试代码", "测试代码size=" + size);
+       // Log.e("测试代码", "测试代码size=" + size);
 
         for (int i = 0; i < size; i++) {
             list.add(randomArroundLatLng(center));

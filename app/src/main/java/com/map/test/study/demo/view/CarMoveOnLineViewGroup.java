@@ -2,15 +2,13 @@ package com.map.test.study.demo.view;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.amap.api.maps.AMap;
 import com.amap.api.maps.AMapUtils;
 import com.amap.api.maps.model.BitmapDescriptorFactory;
 import com.amap.api.maps.model.LatLng;
-import com.amap.api.services.core.LatLonPoint;
-import com.amap.api.services.route.DriveRouteResult;
 import com.map.test.study.demo.R;
+import com.map.test.study.demo.utils.MoveDistanceTimeUtils;
 import com.yisingle.amapview.lib.base.view.marker.AbstractMarkerView;
 import com.yisingle.amapview.lib.view.PathPlaningView;
 import com.yisingle.amapview.lib.view.PointMarkerView;
@@ -31,7 +29,7 @@ public class CarMoveOnLineViewGroup {
     private AMap aMap;
 
     /**
-     * 移动车辆位置
+     * 移动车辆图标
      */
     private PointMarkerView<String> carMoveView;
 
@@ -41,17 +39,25 @@ public class CarMoveOnLineViewGroup {
 
     private LatLng endLatlng;
 
+    private MoveDistanceTimeUtils moveDistanceTimeUtils;
+
 
     public CarMoveOnLineViewGroup(@NonNull Context context, @NonNull AMap aMap) {
         this.context = context;
         this.aMap = aMap;
 
+
         carMoveView = new PointMarkerView.Builder(context, aMap)
                 .setIcon(BitmapDescriptorFactory.fromResource(R.mipmap.car))
                 .setAnchor(0.5f, 0.5f).create();
 
+
         pathPlaningView = new PathPlaningView.Builder(context, aMap)
-                .setStartMarkBuilder(new PointMarkerView.Builder(context, aMap).setVisible(false)).create();
+                .create();
+
+
+        moveDistanceTimeUtils = new MoveDistanceTimeUtils(context, pathPlaningView);
+
 
         carMoveView.setMoveListener(new AbstractMarkerView.OnMoveListener() {
             @Override
@@ -61,51 +67,13 @@ public class CarMoveOnLineViewGroup {
                     return;
                 }
 
-
-                //如果路径规划的起点和 移动起点小于1000米那么也不画线
-                LatLonPoint latLonPoint = pathPlaningView.getStartLatLonPoint();
-                if (null != latLonPoint) {
-                    LatLng lineStartLatLng = new LatLng(latLonPoint.getLatitude(), latLonPoint.getLongitude());
-                    if (AMapUtils.calculateLineDistance(lineStartLatLng, latLng) < 50) {
-                        Log.e("测试代码", "测试代码<ditance=" + AMapUtils.calculateLineDistance(lineStartLatLng, latLng));
-                        return;
-                    }
-                }
-
-
-                drawLine(latLng, endLatlng);
+                moveDistanceTimeUtils.moveCalcuDistanceTime(latLng, endLatlng);
 
 
             }
         });
     }
 
-
-    private void drawLine(LatLng start, LatLng end) {
-        Log.e("测试代码", "测试代码drawLine");
-        LatLonPoint startPoint = new LatLonPoint(start.latitude, start.longitude);
-
-        LatLonPoint endPoint = new LatLonPoint(end.latitude, end.longitude);
-
-        pathPlaningView.beginDriveRouteSearched(startPoint, endPoint, true,
-                new PathPlaningView.OnPathPlaningCallBack() {
-                    @Override
-                    public void onStart() {
-
-                    }
-
-                    @Override
-                    public void onSucccess(DriveRouteResult routeResult) {
-
-                    }
-
-                    @Override
-                    public void onFailed(String errorInfo) {
-
-                    }
-                });
-
-    }
 
     public void setEndLatlng(LatLng endLatlng) {
         this.endLatlng = endLatlng;
@@ -131,10 +99,8 @@ public class CarMoveOnLineViewGroup {
                 LatLng middleLatLng = list.get(middle);
                 //当传递过来的坐标数组中间的坐标   与marker现在的坐标距离大于distance
                 // 那么跳过以前坐标数组  直接到现在的坐标运动
-
                 if (AMapUtils.calculateLineDistance(nowLatLng, nowLatLng) >= distance) {
                     carMoveView.startMove(list, false);
-
                 } else {
                     carMoveView.startMove(list, true);
                 }
@@ -153,9 +119,18 @@ public class CarMoveOnLineViewGroup {
             carMoveView.destory();
         }
 
+
         if (null != pathPlaningView) {
             pathPlaningView.destory();
+            moveDistanceTimeUtils.setPathPlaningView(null);
         }
 
+        if (null != moveDistanceTimeUtils) {
+            moveDistanceTimeUtils.detory();
+        }
+
+
     }
+
+
 }

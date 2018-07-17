@@ -6,22 +6,20 @@ import android.util.Log;
 import android.util.Pair;
 
 import com.amap.api.maps.model.LatLng;
+import com.amap.api.maps.utils.SpatialRelationUtil;
 import com.amap.api.services.core.LatLonPoint;
 import com.amap.api.services.route.BusRouteResult;
-import com.amap.api.services.route.DrivePath;
 import com.amap.api.services.route.DriveRouteResult;
-import com.amap.api.services.route.DriveStep;
 import com.amap.api.services.route.RideRouteResult;
 import com.amap.api.services.route.RouteSearch;
-import com.amap.api.services.route.TMC;
 import com.amap.api.services.route.WalkRouteResult;
-import com.yisingle.amapview.lib.utils.SpatialRelationExpandUtil;
+import com.yisingle.amapview.lib.base.view.polyline.BasePolyLineView;
+import com.yisingle.amapview.lib.base.view.polyline.BaseTrafficMutilyPolyLineView;
+import com.yisingle.amapview.lib.view.PathPlaningView;
+import com.yisingle.amapview.lib.view.RouteLineView;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
@@ -48,15 +46,15 @@ public class MoveDistanceTimeUtils {
     private boolean isRouteSearchSuccess = false;
 
 
-    private DrivePath drivePath;
-
     private ThreadPoolExecutor threadPoolExecutor;
 
 
-    private OnDriverPathListener onDriverPathListener;
+    private PathPlaningView pathPlaningView;
 
-    public MoveDistanceTimeUtils(Context context) {
+
+    public MoveDistanceTimeUtils(Context context, PathPlaningView pathPlaningView) {
         this.context = context;
+        this.pathPlaningView = pathPlaningView;
 
 
         //线程池  采用  线程池数为1 的
@@ -65,17 +63,14 @@ public class MoveDistanceTimeUtils {
                 1,
                 6000,
                 TimeUnit.SECONDS,
-                new ArrayBlockingQueue(10), new ThreadFactory() {
+                new ArrayBlockingQueue<Runnable>(5), new ThreadPoolExecutor.DiscardOldestPolicy());
 
-            @Override
-            public Thread newThread(@NonNull Runnable runnable) {
-                return new Thread("MoveDistanceTimeUtils_Thread");
-            }
-        }, new ThreadPoolExecutor.DiscardOldestPolicy());
+
     }
 
     private void searchRoute(LatLonPoint stratLatLonPoint, LatLonPoint endLatLonPoint) {
 
+        Log.e("测试代码", "测试代码距离+searchRoute");
         isRouteSearching = true;
         RouteSearch routeSearch = new RouteSearch(getContext());
         routeSearch.setRouteSearchListener(new RouteSearch.OnRouteSearchListener() {
@@ -89,16 +84,15 @@ public class MoveDistanceTimeUtils {
                 isRouteSearching = false;
                 if (i == successCode) {
                     if (null != driveRouteResult && null != driveRouteResult.getPaths() && driveRouteResult.getPaths().size() > 0) {
-                        drivePath = driveRouteResult.getPaths().get(0);
                         isRouteSearchSuccess = true;
-                        if (null != onDriverPathListener) {
-                            onDriverPathListener.onCallBack(drivePath);
+                        if (null != pathPlaningView) {
+                            pathPlaningView.draw(driveRouteResult);
                         }
                     }
 
                 } else {
 
-
+                    // Log.e("测试代码", "测试代码距离+searchRoute--failed");
                 }
             }
 
@@ -126,6 +120,11 @@ public class MoveDistanceTimeUtils {
         moveCalcuDistanceTime(new LatLonPoint(move.latitude, move.longitude), new LatLonPoint(end.latitude, end.longitude));
     }
 
+
+    private float totalDistance = 0f;
+
+    private LatLonPoint lastLatLonPoint = null;
+
     /**
      * 移动并计算距离
      */
@@ -133,7 +132,6 @@ public class MoveDistanceTimeUtils {
 
         if (isRouteSearching) {
             //如果正在路径规划,不进行计算  直接返回
-            Log.e("测试代码", "路径规划正在查询,所以直接返回");
             return;
         }
 
@@ -141,16 +139,28 @@ public class MoveDistanceTimeUtils {
             //判断如果需要路径规划
             searchRoute(move, end);
         } else {
-            if (null == drivePath) {
-                Log.e("测试代码", "drivePath---null");
-                return;
+
+
+            if (lastLatLonPoint != null) {
+                totalDistance = totalDistance + DistanceUtils.calculateTwoPointDistance(lastLatLonPoint, move);
+                if (totalDistance < 2f) {
+                    return;
+
+                } else {
+                    totalDistance = 0f;
+                }
+
+
             }
+            lastLatLonPoint = move;
 
             threadPoolExecutor.execute(new Runnable() {
                 @Override
                 public void run() {
 
-                    calculat(move, drivePath);
+                    calulateRouteLineView(move);
+
+
                 }
             });
 
@@ -158,89 +168,119 @@ public class MoveDistanceTimeUtils {
 
     }
 
-
-    private void calculat(LatLonPoint move, DrivePath drivePath) {
-
-
-        //返回此方案中的道路的总长度，单位米。
-        float allDistance = drivePath.getDistance();
-        //返回此方案中的道路的总时间，单位s
-        long allDuration = drivePath.getDuration();
-        if (allDuration < 0) {
-            allDuration = 1;
-        }
-        BigDecimal speedBigDecimal = new BigDecimal(allDistance)
-                .divide(new BigDecimal(allDistance), 2, BigDecimal.ROUND_HALF_UP);
-
-        List<LatLng> totalLatLng = new ArrayList<>();
-
-
-        //线路中交通情况
-        List<TMC> trafficTmcs = new ArrayList<>();
-
-
-        List<LatLonPoint> tmcList = new ArrayList<>();
-        //组装数据
-        List<DriveStep> driveStepList = drivePath.getSteps();
-        for (DriveStep step : driveStepList) {
-            // 获取交通状态不同的坐标点的集合
-            // 后面将根据trafficTmcs来进行交通状态画线
-            // trafficPolyLinewViews会根据trafficTmcs来画线
-            for (TMC tmc : step.getTMCs()) {
-                tmcList = tmc.getPolyline();
-                Pair<Integer, LatLonPoint> pair = SpatialRelationExpandUtil.calShortestDistancePoint(tmcList, move);
-
-                float realDistance = DistanceUtils.calculateTwoPointDistance(move, pair.second);
-
-                Log.e("测试代码", "测试代码realDistance=" + realDistance);
-                if (pair.first > 0 && pair.first + 1 <= tmcList.size()) {
-
-
-                    List removeList = tmc.getPolyline().subList(0, pair.first + 1);
-
-
-                    Log.e("测试代码", "测试代码pair.first=" + pair.first + "----pair.second=" + pair.second);
-
-
-                    float removeDistance = DistanceUtils.calcaulateListDistance(removeList);
-
-                    allDistance = allDistance - removeDistance;
-                    if (allDistance < 0) {
-                        allDistance = 5;
-                    }
-
-                    long removeDuration = new BigDecimal(removeDistance)
-                            .divide(speedBigDecimal, 2, BigDecimal.ROUND_HALF_UP).longValue();
-
-                    allDuration = allDuration - removeDuration;
-
-                    if (allDuration < 0) {
-                        allDuration = 30;
-                    }
-
-                    removeList.clear();
-
-
-                }
-
-                if (null != tmc.getPolyline() && tmc.getPolyline().size() != 0) {
-                    trafficTmcs.add(tmc);
-
-                    for (LatLonPoint latLonPoint : tmc.getPolyline()) {
-                        totalLatLng.add(new LatLng(latLonPoint.getLatitude(), latLonPoint.getLongitude()));
-                    }
-
-                }
-
+    private void calulateRouteLineView(LatLonPoint move) {
+        if (null != pathPlaningView && null != pathPlaningView.getSimpleRouteLineView()) {
+            RouteLineView routeLineView = pathPlaningView.getSimpleRouteLineView();
+            if (null != routeLineView.getArrowPolyLineView()) {
+                calculatePolyLineView(move, routeLineView.getArrowPolyLineView());
+            }
+            if (null != routeLineView.getDefaultBasePolyLineView()) {
+                calculatePolyLineView(move, routeLineView.getDefaultBasePolyLineView());
+            }
+            if (null != routeLineView.getTrafficPolyLinewView()) {
+                calculateTrafficePolyLineViews(move, routeLineView.getTrafficPolyLinewView());
             }
 
+        }
+
+    }
+
+    private void calculatePolyLineView(LatLonPoint move, @NonNull final BasePolyLineView basePolyLineView) {
+
+        if (null != basePolyLineView && null != basePolyLineView.getLatLngList() && basePolyLineView.getLatLngList().size() > 0) {
+            List<LatLng> list = basePolyLineView.getLatLngList();
+
+            calculatListLatLng(move, list, new OnCallBack() {
+                @Override
+                public void onListCallBack(List<LatLng> list) {
+                    basePolyLineView.setPoints(list);
+                }
+
+                @Override
+                public void nearByLastPoint() {
+
+
+                }
+
+                @Override
+                public void onFarAwayPath() {
+
+
+                }
+            });
+        }
+
+    }
+
+    private void calculateTrafficePolyLineViews(LatLonPoint move, @NonNull BaseTrafficMutilyPolyLineView trafficView) {
+
+        final List<BasePolyLineView> polyLineViewList = trafficView.getTrafficPolyLineViews();
+        if (null != polyLineViewList && polyLineViewList.size() > 0) {
+            final BasePolyLineView basePolyLineView = polyLineViewList.get(0);
+            List<LatLng> list = basePolyLineView.getLatLngList();
+
+            calculatListLatLng(move, list, new OnCallBack() {
+                @Override
+                public void onListCallBack(List<LatLng> list) {
+                    basePolyLineView.setPoints(list);
+                }
+
+                @Override
+                public void nearByLastPoint() {
+                    basePolyLineView.destory();
+                    polyLineViewList.remove(0);
+                }
+
+                @Override
+                public void onFarAwayPath() {
+                    isRouteSearchSuccess = false;
+
+                }
+            });
+        }
+
+    }
+
+
+    private void calculatListLatLng(@NonNull LatLonPoint move, @NonNull List<LatLng> latLngList, OnCallBack onCallBack) {
+        Pair<Integer, LatLng> pair = SpatialRelationUtil.calShortestDistancePoint(latLngList, new LatLng(move.getLatitude(), move.getLongitude()));
+
+        if (null == pair) {
+            return;
+        }
+        float shortDistance = DistanceUtils.calculateTwoPointDistance(pair.second, latLngList.get(0));
+        if (shortDistance == 0 && latLngList.size() >= 2) {
+            float ditance = DistanceUtils.calculateTwoPointDistance(latLngList.get(0), latLngList.get(1));
+            if (ditance > 50) {
+                if (null != onCallBack) {
+                    onCallBack.onFarAwayPath();
+                }
+
+            } else if (ditance < 10 && latLngList.size() == 2) {
+                if (null != onCallBack) {
+                    onCallBack.nearByLastPoint();
+                }
+            }
 
         }
-        drivePath.setDistance(allDistance);
-        drivePath.setDuration(allDuration);
-        if (null != onDriverPathListener) {
-            onDriverPathListener.onCallBack(drivePath);
+        latLngList.set(pair.first, new LatLng(move.getLatitude(), move.getLongitude()));
+
+        latLngList.subList(0, pair.first).clear();
+//        List<LatLng> subList = latLngList.subList(pair.first, latLngList.size());
+        if (null != onCallBack) {
+            onCallBack.onListCallBack(latLngList);
         }
+
+
+    }
+
+
+    public PathPlaningView getPathPlaningView() {
+        return pathPlaningView;
+    }
+
+    public void setPathPlaningView(PathPlaningView pathPlaningView) {
+        this.pathPlaningView = pathPlaningView;
     }
 
     public Context getContext() {
@@ -248,7 +288,26 @@ public class MoveDistanceTimeUtils {
     }
 
 
-    public interface OnDriverPathListener {
-        void onCallBack(DrivePath path);
+    public void detory() {
+        threadPoolExecutor.shutdownNow();
+        pathPlaningView = null;
+    }
+
+
+    private interface OnCallBack {
+
+
+        void onListCallBack(List<LatLng> list);
+
+        /**
+         * 当接近最后一个点
+         */
+        void nearByLastPoint();
+
+        /**
+         * 原来当前的路线了 可以进行路径规划
+         */
+        void onFarAwayPath();
+
     }
 }

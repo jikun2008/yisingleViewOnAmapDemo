@@ -2,6 +2,8 @@ package com.map.test.study.demo.demo;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
+import android.util.Pair;
 import android.view.View;
 
 import com.amap.api.maps.CameraUpdateFactory;
@@ -14,6 +16,7 @@ import com.map.test.study.demo.R;
 import com.map.test.study.demo.base.BaseMapActivity;
 import com.map.test.study.demo.data.TestDataUtils;
 import com.yisingle.amapview.lib.base.view.marker.BaseMarkerView;
+import com.yisingle.amapview.lib.utils.SpatialRelationExpandUtil;
 import com.yisingle.amapview.lib.view.PointMarkerView;
 import com.yisingle.amapview.lib.viewholder.MapInfoWindowViewHolder;
 
@@ -91,6 +94,15 @@ public class PointMarkerUseMoveActivty extends BaseMapActivity {
 
         moveCamre(nowListPoints);
         pointMarkerView.startMove(nowListPoints, false);
+
+
+    }
+
+
+    private void testDistance(LatLng latLng) {
+        Pair<Integer, LatLng> pair = SpatialRelationExpandUtil
+                .calShortestDistancePoint(nowListPoints, latLng);
+       // Log.e("测试代码", "测试代码pair.first=" + pair.first + "--pair.second=" + pair.second);
     }
 
     public void stopMove(View view) {

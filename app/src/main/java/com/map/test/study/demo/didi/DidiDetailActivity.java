@@ -2,6 +2,7 @@ package com.map.test.study.demo.didi;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.view.View;
 
 import com.amap.api.maps.CameraUpdateFactory;
 import com.amap.api.maps.TextureMapView;
@@ -62,5 +63,9 @@ public class DidiDetailActivity extends BaseMapActivity {
     public void onDestroy() {
         super.onDestroy();
         carMoveOnLineViewGroup.destory();
+    }
+
+    public void test(View view) {
+
     }
 }
