@@ -11,7 +11,10 @@ import com.amap.api.maps.model.LatLngBounds;
 import com.map.test.study.demo.R;
 import com.map.test.study.demo.base.BaseMapActivity;
 import com.map.test.study.demo.data.TestDataUtils;
-import com.map.test.study.demo.view.CarMoveOnLineViewGroup;
+import com.yisingle.amapview.lib.base.view.marker.BaseMarkerView;
+import com.yisingle.amapview.lib.utils.move.MovePathPlanningUtils;
+import com.yisingle.amapview.lib.view.CarMoveOnPathPlaningView;
+import com.yisingle.amapview.lib.viewholder.MapInfoWindowViewHolder;
 
 import java.util.List;
 
@@ -24,7 +27,7 @@ public class DidiDetailActivity extends BaseMapActivity {
 
     private TextureMapView textureMapView;
 
-    private CarMoveOnLineViewGroup carMoveOnLineViewGroup;
+    private CarMoveOnPathPlaningView<String, String, String> carMoveOnLineViewGroup;
 
     private List<LatLng> nowListPoints = TestDataUtils.readLatLngs();
 
@@ -42,7 +45,28 @@ public class DidiDetailActivity extends BaseMapActivity {
     @Override
     protected void afterMapViewLoad() {
 
-        carMoveOnLineViewGroup = new CarMoveOnLineViewGroup(getApplicationContext(), getAmap());
+        carMoveOnLineViewGroup = new CarMoveOnPathPlaningView.Builder(getApplicationContext(), getAmap())
+                .create();
+
+        carMoveOnLineViewGroup.bingMoveCarInfoWindowView(new BaseMarkerView.BaseInfoWindowView<String>(R.layout.start_info_window, null) {
+            @Override
+            public void bindData(MapInfoWindowViewHolder viewHolder, String data) {
+
+                viewHolder.setText(R.id.tvInfoWindow, data);
+
+            }
+        });
+        carMoveOnLineViewGroup.setListener(new MovePathPlanningUtils.OnDistanceDurationListener() {
+            @Override
+            public void onDataCallBack(MovePathPlanningUtils.DistanceDurationData data) {
+                carMoveOnLineViewGroup.showMoveCarInfoWindow(data.getDistance() + "");
+            }
+
+            @Override
+            public void onDriverRouteSuccess() {
+
+            }
+        });
 
         carMoveOnLineViewGroup.startMove(nowListPoints, new LatLng(30.657616, 104.06625));
         moveCamre(nowListPoints);

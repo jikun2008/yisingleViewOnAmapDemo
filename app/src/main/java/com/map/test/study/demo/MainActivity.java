@@ -18,6 +18,7 @@ import com.map.test.study.demo.demo.PointMarkerActivity;
 import com.map.test.study.demo.demo.PointMarkerUseMoveActivty;
 import com.map.test.study.demo.demo.TextMarkerActivity;
 import com.map.test.study.demo.didi.DidiAllActivity;
+import com.tencent.bugly.crashreport.CrashReport;
 import com.yisingle.amapview.lib.utils.GaoDeErrorUtils;
 
 
